@@ -43,9 +43,9 @@ export async function CompileQuick(template: string): Promise<string> {
  * Compiled:
  * async function main(data) {
  *  var _OUT = "";
- *  _OUT.concat("Hello, ");
- *  _OUT.concat(data.message);
- *  _OUT.concat("!");
+ *  _OUT = _OUT.concat("Hello, ");
+ *  _OUT = _OUT.concat(data.message);
+ *  _OUT = _OUT.concat("!");
  *  return _OUT;
  * }
  */
