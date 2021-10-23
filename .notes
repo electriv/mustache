@@ -1,0 +1,13 @@
+- Notes while developing
+
+"Hello, {{ data::message }}! {{ "{{ test }}" }}"
+        |-               |-  |-              |-
+
+Character; "|" matched { or }. "-" checking match { or } next col.
+
+ERRORS; "()" and "{}" character unallowed within tags
+
+"Test error {{ eval() }}"
+            |-     ~~~~~~
+"Test error2 {{ OBJECT{} }}"
+             |-       ~~~~~

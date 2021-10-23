@@ -22,9 +22,10 @@
   SOFTWARE.
 */
 
-const INITIAL_DECLORATIONS: string[] = ['_OUTPUT = ""', '_NULL = null'];
+/** Declorations attached with the function */
+const INITIAL_DECLORATIONS: string[] = ['_OUTPUT = ""'];
 /** Initial script buffer data */
-const INITIAL_BUFFER = ['async function main(data) {', 'var '.concat(INITIAL_DECLORATIONS.join(', ')).concat(';')];
+const INITIAL_BUFFER = ['// Compiled with Electriv Mustache v0.0.1', 'async function main(data) {', 'var '.concat(INITIAL_DECLORATIONS.join(', ')).concat(';')];
 
 /**
  * Build managment for final built JS compile string.

@@ -9,5 +9,11 @@
     "build": "tsc -b",
     "watch": "tsc -w"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "moo": "^0.5.1"
+  },
+  "devDependencies": {
+    "@types/moo": "^0.5.5"
+  }
 }

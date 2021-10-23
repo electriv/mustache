@@ -23,6 +23,7 @@
 */
 
 import { Build } from './build';
+import { TagsLexer } from './lexer/tagsLexer';
 
 /**
  * Quickly compile and run Electriv Mustache template
@@ -62,7 +63,10 @@ export class Compiler {
 
   // TODO: Compiler, Parser, Lexer...
   compile() {
+    const tagsLexer = new TagsLexer(this.buildLine, this._template);
     console.log(this._data, this.buildLine.buffer);
+    console.log(tagsLexer.lexe());
+
     return this._template;
   }
 }
