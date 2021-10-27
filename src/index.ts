@@ -23,7 +23,9 @@
 */
 
 import { Build } from './build';
-import { TagsLexer } from './lexer/tagsLexer';
+import { TagLexer } from './lexer/tagLexer';
+import { TagsLexer, TagsToken } from './lexer/tagsLexer';
+import { Parser } from './parser';
 
 /**
  * Quickly compile and run Electriv Mustache template
@@ -57,16 +59,31 @@ export class Compiler {
   constructor(templateString: string, data: any = {}) {
     if (typeof templateString !== 'string') throw new TypeError('"templateString" must be a string');
     if (typeof data !== 'object') throw new TypeError('"data" must be an object');
-    this._template = templateString;
+    this._template = templateString.trimEnd();
     this._data = data;
   }
 
-  // TODO: Compiler, Parser, Lexer...
-  compile() {
-    const tagsLexer = new TagsLexer(this.buildLine, this._template);
-    console.log(this._data, this.buildLine.buffer);
-    console.log(tagsLexer.lexe());
+  private _safeConcat = (str: string) => str.replace(/"/g, '\\"');
 
+  // TODO: Compiler, Parser, Lexer...
+  compile(): string | Error {
+    const tagsLexer = new TagsLexer(this.buildLine, this._template);
+    const tags = tagsLexer.lexe();
+    if (typeof tags[0] === 'string') {
+      return new Error(tags[0]);
+    }
+    for (const tag of tags as TagsToken[]) {
+      if (tag.type == 'content') {
+        this.buildLine.push(`_OUTPUT = _OUTPUT.concat("${this._safeConcat(tag.value)}");`);
+      } else if (tag.type === 'tag') {
+        const lexeTag = new TagLexer(tag.value);
+        const parser = new Parser();
+        console.log(parser.parse(lexeTag.lexe()));
+      }
+    }
+
+    this.buildLine.push('}');
+    console.log(this._data, this.buildLine.buffer);
     return this._template;
   }
 }
