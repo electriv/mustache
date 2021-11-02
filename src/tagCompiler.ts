@@ -22,27 +22,26 @@
   SOFTWARE.
 */
 
-import { compile } from 'moo';
+import { rule } from './parser';
 
 /**
- * Lexes tag content
- * "data::message" will be turned into an array of tokens;
+ * Final stage of a tag to build it out / compile
+ * @example
+ * // Example#1
+ * const rules = [
+ *  { type: 'identifier', value: 'data' },
+ *  { type: 'dot', value: '.' },
+ *  { type: 'identifier', value: 'message' }
+ * ];
+ * const tagCompiler = new TagCompiler(buildLine);
+ * console.log(tagCompiler.compile(rules));
+ * // _OUTPUT = _OUTPUT.concat(data.message)
  */
-export class TagLexer {
-  constructor(private tag: string) {}
+export default class TagCompiler {
+  compile(rules: rule[]): string | null {
+    if (rules.length <= 0) return null;
+    console.log(rules);
 
-  lexe() {
-    const lexer = compile({
-      identifier: /\w+/,
-      comment: /!.*$/,
-      doubleColon: /::/,
-      string: {
-        match: /".*"/,
-        value: x => x.slice(1, -1),
-      },
-      ws: /[ \t]+/,
-    });
-    lexer.reset(this.tag);
-    return Array.from(lexer);
+    return '';
   }
 }

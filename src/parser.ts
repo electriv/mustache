@@ -24,11 +24,43 @@
 
 import { Token } from 'moo';
 
-export class Parser {
-  parse(tokens: Token[]) {
-    const rules: { type: string; value: any }[] = [];
+export interface rule {
+  type: string;
+  value: any;
+}
 
-    for (const token of tokens) {
+export class Parser {
+  private getTagsBuildUp(tokens: Token[], currentIndex: number): string {
+    return tokens
+      .slice(0, currentIndex)
+      .map(t => t.toString())
+      .join('');
+  }
+
+  private getTokenLineLengthBuildUp(tokens: Token[], currentIndex: number): number {
+    return tokens.slice(0, currentIndex).reduce((p, c) => p + c.col, 0);
+  }
+
+  private drawUnderLine(tokens: Token[], currentIndex: number, extraLength: number = 0): string {
+    let str = '';
+    const MSG_LENG = 29 + extraLength;
+    str = str.concat(...(new Array(MSG_LENG).fill(null).map(() => ' ') as string[]));
+
+    const erringLength = tokens.slice(0, currentIndex).reduce((p, c) => p + c.toString().length, 0);
+    return str.concat(
+      ...Array(erringLength)
+        .fill(null)
+        .map(() => '^')
+    );
+  }
+
+  parse(tokens: Token[]) {
+    const rules: rule[] = [];
+    let PARSING_LAST_WAS_DOT = false;
+
+    // TODO: Manualy advance the tokens index
+    for (let index = 0; index < tokens.length; index++) {
+      const token = tokens[index];
       switch (token.type) {
         case 'comment':
           break;
@@ -37,17 +69,23 @@ export class Parser {
           rules.push({ type: 'string', value: token.value });
           break;
 
-        case 'identifyer':
-          rules.push({ type: 'identifyer', value: token.value });
+        case 'identifier':
+          // TODO: Parse identifier to self build out an object ("data.bar")
+          rules.push({ type: 'identifier', value: token.value });
           break;
 
         case 'doubleColon':
+          // TODO: ?Remove/move into the identifier parser
+          if (PARSING_LAST_WAS_DOT) {
+            const tokenLineLength = this.getTokenLineLengthBuildUp(tokens, index);
+            throw SyntaxError(`Unexpected token; Tag:${index + 1}:${tokenLineLength} - ${this.getTagsBuildUp(tokens, index + 1)}
+            ${this.drawUnderLine(tokens, index, tokenLineLength)}`);
+          }
+          PARSING_LAST_WAS_DOT = true;
           rules.push({ type: 'dot', value: '.' });
           break;
       }
     }
-
-    console.log(tokens);
 
     return rules;
   }

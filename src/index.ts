@@ -26,6 +26,7 @@ import { Build } from './build';
 import { TagLexer } from './lexer/tagLexer';
 import { TagsLexer, TagsToken } from './lexer/tagsLexer';
 import { Parser } from './parser';
+import TagCompiler from './tagCompiler';
 
 /**
  * Quickly compile and run Electriv Mustache template
@@ -78,7 +79,11 @@ export class Compiler {
       } else if (tag.type === 'tag') {
         const lexeTag = new TagLexer(tag.value);
         const parser = new Parser();
-        console.log(parser.parse(lexeTag.lexe()));
+        const tagCompiler = new TagCompiler();
+        const compiled = tagCompiler.compile(parser.parse(lexeTag.lexe()));
+        if (compiled) {
+          console.log(compiled);
+        }
       }
     }
 
