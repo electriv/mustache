@@ -29,11 +29,11 @@ export class RunTime {
   /**
    * Executes compiled Mustache code and return the output
    */
-  run(script: string) {
+  run(script: string, data: any) {
     if (typeof script !== 'string') throw TypeError('"Script" must be string');
     const sc = script.replace(/\/\/.*/, 'return (') + ')';
     const mainFunction = new Function(sc)();
 
-    return mainFunction({ message: 'world' });
+    return mainFunction(data);
   }
 }

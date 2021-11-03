@@ -32,13 +32,13 @@ import { RunTime } from './runtime';
 /**
  * Quickly compile and run Electriv Mustache template
  */
-export async function CompileQuick(template: string, htmlSafe?: boolean): Promise<string> {
+export async function CompileQuick(template: string, data: any, htmlSafe?: boolean): Promise<string> {
   return new Promise((resolve, reject) => {
     const compiler = new Compiler(template, {});
     const compiled = compiler.compile(htmlSafe);
 
     if (typeof compiled == 'string') {
-      resolve(new RunTime().run(compiled));
+      resolve(new RunTime().run(compiled, data));
     } else {
       reject(compiled);
     }
