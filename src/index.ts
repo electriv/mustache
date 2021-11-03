@@ -27,13 +27,35 @@ import { TagLexer } from './lexer/tagLexer';
 import { TagsLexer, TagsToken } from './lexer/tagsLexer';
 import { Parser } from './parser';
 import TagCompiler from './tagCompiler';
+import { RunTime } from './runtime';
 
 /**
  * Quickly compile and run Electriv Mustache template
  */
-export async function CompileQuick(template: string): Promise<string> {
-  return template;
+export async function CompileQuick(template: string, htmlSafe?: boolean): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const compiler = new Compiler(template, {});
+    const compiled = compiler.compile(htmlSafe);
+
+    if (typeof compiled == 'string') {
+      resolve(new RunTime().run(compiled));
+    } else {
+      reject(compiled);
+    }
+  });
 }
+
+export { RunTime };
+export const _escape = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+  '`': '&#x60;',
+  '=': '&#x3D;',
+};
 
 /**
  * Electrive Compiler
@@ -64,10 +86,10 @@ export class Compiler {
     this._data = data;
   }
 
-  private _safeConcat = (str: string) => str.replace(/"/g, '\\"');
+  private _safeConcat = (str: string) => str.replace(/\n/g, '\\n').replace(/"/g, '\\"');
 
   // TODO: Compiler, Parser, Lexer...
-  compile(): string | Error {
+  compile(htmlSafe = false): string | Error {
     const tagsLexer = new TagsLexer(this.buildLine, this._template);
     const tags = tagsLexer.lexe();
     if (typeof tags[0] === 'string') {
@@ -82,13 +104,15 @@ export class Compiler {
         const tagCompiler = new TagCompiler();
         const compiled = tagCompiler.compile(parser.parse(lexeTag.lexe()));
         if (compiled) {
-          console.log(compiled);
+          this.buildLine.push(compiled);
         }
       }
     }
 
+    if (htmlSafe) this.buildLine.addDecloration('_ESCAPE_', _escape);
+    this.buildLine.push(`return _OUTPUT${htmlSafe ? `.replace(/[&<>"'\`=\/]/g,function(s){_ESCAPE_[s]});` : ';'}`);
     this.buildLine.push('}');
-    console.log(this._data, this.buildLine.buffer);
-    return this._template;
+    this._data;
+    return this.buildLine.buffer.join('\n');
   }
 }

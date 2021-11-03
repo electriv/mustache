@@ -66,7 +66,7 @@ export class Parser {
           break;
 
         case 'string':
-          rules.push({ type: 'string', value: token.value });
+          rules.push({ type: 'string', value: token.text });
           break;
 
         case 'identifier':

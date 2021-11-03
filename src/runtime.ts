@@ -22,39 +22,18 @@
   SOFTWARE.
 */
 
-/** Declorations attached with the function */
-const INITIAL_DECLORATIONS: string[] = ['_OUTPUT = ""'];
-/** Initial script buffer data */
-const INITIAL_BUFFER = (declorations = INITIAL_DECLORATIONS) => [
-  '// Compiled with Electriv Mustache v0.0.2',
-  'function main(data) {',
-  'var '.concat(declorations.join(', ')).concat(';'),
-];
-
 /**
- * Build managment for final built JS compile string.
+ * Executes compiled Mustache code
  */
-export class Build {
-  #buffer: string[] = INITIAL_BUFFER();
+export class RunTime {
+  /**
+   * Executes compiled Mustache code and return the output
+   */
+  run(script: string) {
+    if (typeof script !== 'string') throw TypeError('"Script" must be string');
+    const sc = script.replace(/\/\/.*/, 'return (') + ')';
+    const mainFunction = new Function(sc)();
 
-  push(...items: string[]) {
-    if (!items.every(i => typeof i === 'string')) return;
-    this.#buffer.push(...items);
-  }
-
-  private _parseDecloration(value: any): string {
-    if (typeof value === 'object') return JSON.stringify(value);
-    return value;
-  }
-
-  addDecloration(key: string, value: any) {
-    let newBuffer = [...this.#buffer];
-    newBuffer = newBuffer.slice(3);
-    newBuffer = [...INITIAL_BUFFER(INITIAL_DECLORATIONS.concat(`${key} = ${this._parseDecloration(value)}`)), ...newBuffer];
-    this.#buffer = newBuffer;
-  }
-
-  get buffer(): readonly string[] {
-    return (<string[]>[]).concat(...this.#buffer);
+    return mainFunction({ message: 'world' });
   }
 }

@@ -40,8 +40,8 @@ import { rule } from './parser';
 export default class TagCompiler {
   compile(rules: rule[]): string | null {
     if (rules.length <= 0) return null;
-    console.log(rules);
 
-    return '';
+    //! Needs work for later on added features.
+    return `_OUTPUT = _OUTPUT.concat(${rules.map(i => i.value.replace(/\n/g, '\\n')).join('')});`;
   }
 }
