@@ -1,5 +1,6 @@
 const { Compiler, RunTime, CompileQuick } = require('../dist');
-const template = 'Hello, {{ data::message }}! \n{{ "*" }} {{! comment }}';
+const template = 'Not much is currently known about {{ data::tag }}!#@$%^&*(*()" {{ data::bar }} {{ "foo" }}';
+// const template = 'Hello, {{ data::message }}! \n{{ "*" }} {{! comment }}';
 //{{ "string" . "concat" }} {{ "string concat with message: " . data::message }} ~ Work in progress
 
 // const compiler = new Compiler(template, {});
@@ -12,7 +13,10 @@ const template = 'Hello, {{ data::message }}! \n{{ "*" }} {{! comment }}';
 //   throw compiled;
 // }
 async function main() {
-  console.log(await CompileQuick(template));
+  const compiler = new Compiler(template, {});
+  const compiled = compiler.compile(true);
+  console.log(compiled);
+  // console.log(await CompileQuick(template));
 }
 
 main();

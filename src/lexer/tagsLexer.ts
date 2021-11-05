@@ -47,10 +47,23 @@ export class TagsLexer {
 
   lexe(): TagsToken[] | [string] {
     const tokens: TagsToken[] = [];
+    /**
+     * Content processed and added thats not a tag.
+     *
+     * Example text: This is a test {{ data::foo }} !!
+     *
+     * The content processed will be tokened as 'content' with the value collected
+     * 1) "This is a test"
+     * 2) " !!"
+     */
     var STRING_BUILD = '',
+      /** Build of a tag */
       TAG_BUILD = '',
+      /** If we're processing an open string within a tag. Avoding syntax errors */
       IN_STRING = false,
+      /** If we're within a tag */
       IN_TAG = false,
+      /** Any existing error created during processing */
       ERROR;
 
     while (this.current !== null) {
@@ -62,13 +75,14 @@ export class TagsLexer {
         if (IN_TAG) {
           ERROR = `Unexpected token "{" at ${this.position} in side tag`;
           break;
-        } else {
+        } else if (!IN_TAG) {
           const next = this.readNext() === '{';
           if (next) this.advance();
           if (STRING_BUILD.length > 0) {
             tokens.push({ type: 'content', value: STRING_BUILD });
             STRING_BUILD = '';
           }
+
           IN_TAG = true;
         }
         this.advance();
@@ -97,7 +111,7 @@ export class TagsLexer {
       }
     }
 
-    if (STRING_BUILD.length > 0 || TAG_BUILD.length > 0) ERROR = `Unexpected token ~` + (STRING_BUILD.length > 0 ? STRING_BUILD : TAG_BUILD);
+    if (TAG_BUILD.length > 0) ERROR = `Unexpected token ~` + TAG_BUILD;
 
     // console.log(`STRING_BUILD: ${STRING_BUILD} TAG_BUILD: ${TAG_BUILD} ERROR ${ERROR}`);
     if (ERROR) return [ERROR];
