@@ -3,7 +3,10 @@
   "version": "0.0.2",
   "description": "Electriv mustache language implementation",
   "main": "dist/index.js",
-  "repository": "https://github.com/electriv/mustache.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/electriv/mustache.git"
+  },
   "author": "Wilbert-mad",
   "scripts": {
     "build": "tsc -b",
@@ -15,5 +18,9 @@
   },
   "devDependencies": {
     "@types/moo": "^0.5.5"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/electriv/mustache/issues"
+  },
+  "homepage": "https://github.com/electriv/mustache#readme"
 }
