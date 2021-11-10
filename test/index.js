@@ -1,5 +1,5 @@
 const { Compiler, RunTime, CompileQuick } = require('../dist');
-const template = 'Not much is currently known about {{ data::tag }}!#@$%^&*(*()" {{ data::bar }} {{ "foo" }}';
+const template = 'Not much is currently known about {{ data::tag }}! content allowed after <p>correct replace</p>';
 // const template = 'Hello, {{ data::message }}! \n{{ "*" }} {{! comment }}';
 //{{ "string" . "concat" }} {{ "string concat with message: " . data::message }} ~ Work in progress
 

@@ -113,6 +113,7 @@ export class TagsLexer {
 
     if (TAG_BUILD.length > 0) ERROR = `Unexpected token ~` + TAG_BUILD;
 
+    if (STRING_BUILD.length) tokens.push({ type: 'content', value: STRING_BUILD.trimEnd() });
     // console.log(`STRING_BUILD: ${STRING_BUILD} TAG_BUILD: ${TAG_BUILD} ERROR ${ERROR}`);
     if (ERROR) return [ERROR];
     tokens.push({ type: 'EOF', value: '' });

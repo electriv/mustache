@@ -110,7 +110,7 @@ export class Compiler {
     }
 
     if (htmlSafe) this.buildLine.addDecloration('_ESCAPE_', _escape);
-    this.buildLine.push(`return _OUTPUT${htmlSafe ? `.replace(/[&<>"'\`=\/]/g,function(s){_ESCAPE_[s]});` : ';'}`);
+    this.buildLine.push(`return _OUTPUT${htmlSafe ? `.replace(/[&<>"'\`=\/]/g,function(s){return _ESCAPE_[s]});` : ';'}`);
     this.buildLine.push('}');
     this._data;
     return this.buildLine.buffer.join('\n');
